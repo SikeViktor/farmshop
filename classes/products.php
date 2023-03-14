@@ -17,14 +17,28 @@ class Products extends Db
         }
     }
 
+    public function countProducts()    
+    {
+        try {
+            $stmt = "SELECT COUNT(*) as count FROM products 
+                INNER JOIN product_categories 
+                ON product_category_id = category_id";
+            $results = $this->connect()->query($stmt)->fetch()['count'];
+            return $results;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
     public function getProductsByDate()
     {
         try {
             $stmt = "SELECT * FROM products 
                 INNER JOIN product_categories 
                 ON product_category_id = category_id
-                ORDER BY product_created_at DESC";                
-                
+                ORDER BY product_created_at DESC";
+
             $results = $this->connect()->query($stmt);
             return $results;
         } catch (PDOException $e) {
@@ -96,6 +110,21 @@ class Products extends Db
         }
     }
 
+    public function listProducts($page, $element)
+    {
+        try {
+            $offset = ($page - 1) * $element;
+            $query = "SELECT * FROM products 
+            INNER JOIN product_categories 
+            ON product_category_id = category_id LIMIT $offset, $element";
+            $results = $this->connect()->query($query)->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
     public function newProduct($product_name, $product_description, $category_name, $product_quantity, $product_price, $product_discount_percent, $product_img_path)
     {
         try {
@@ -116,7 +145,8 @@ class Products extends Db
         }
     }
 
-    public function getProductRating($product_id) {        
+    public function getProductRating($product_id)
+    {
         try {
             $stmt = $this->connect()->prepare("SELECT AVG(rating) as rating FROM `product_rating` WHERE product_id = ?");
             $stmt->bindParam(1, $product_id);

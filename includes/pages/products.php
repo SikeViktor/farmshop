@@ -1,7 +1,11 @@
 <?php
 $products = new Products();
 
-$result = $products->getProducts();
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$countProducts = $products->countProducts();
+$result = $products->listProducts($page, 12);
+
+$total_pages = ceil($countProducts / 12);
 
 //$_SESSION["product_in_cart"]=[];
 
@@ -26,6 +30,8 @@ if (isset($_POST["cart"])) {
             </script>";
     }
 }
+
+
 
 ?>
 
@@ -80,9 +86,15 @@ if (isset($_POST["cart"])) {
                 </a>
             </div>
 
-        <?php } ?>
+        <?php } // Display the pagination links
+        echo "<ul class=\"pagination\">";
+        for ($i = 1; $i <= $total_pages; $i++) {
+            $active = ($i == $page) ? "active" : "";
+            echo "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+        }
+        echo "</ul>"; 
+        ?>
 
     </div>
 
 </div>
-

@@ -29,7 +29,7 @@ switch ($_SERVER["REQUEST_URI"]) {
     case '/farmshop/products.php':
         require "includes/pages/products.php";
         break;
-    case preg_match('/^\/farmshop\/products\.php\?category=(\d+)/', $_SERVER["REQUEST_URI"]) ? true : false:
+    case preg_match('/^\/farmshop\/products\.php\?page=(\d+)/', $_SERVER["REQUEST_URI"]) ? true : false:
         require "includes/pages/products.php";
         break;
     case '/farmshop/cart.php':

@@ -36,19 +36,19 @@ if (isset($_POST["cart"])) {
     <div class="carousel-inner">
 
         <div class="carousel-item active">
-            <img src="./images/vegetables/vegetables.png" class="d-block w-50 mx-auto" alt="...">
+            <img src="./images/vegetables.png" class="d-block w-50 mx-auto" alt="...">
             <div class="carousel-caption d-none d-md-block">
                 <h5>Zöldségek</h5>
             </div>
         </div>
         <div class="carousel-item">
-            <img src="./images/vegetables/fruits.png" class="d-block w-50 mx-auto" alt="...">
+            <img src="./images/fruits.png" class="d-block w-50 mx-auto" alt="...">
             <div class="carousel-caption d-none d-md-block">
                 <h5>Gyümölcsök</h5>
             </div>
         </div>
         <div class="carousel-item">
-            <img src="./images/vegetables/eggs.png" class="d-block w-50 mx-auto" alt="...">
+            <img src="./images/eggs.png" class="d-block w-50 mx-auto" alt="...">
             <div class="carousel-caption d-none d-md-block">
                 <h5>Állati termékek</h5>
             </div>
@@ -62,7 +62,15 @@ if (isset($_POST["cart"])) {
         <div class="carousel-inner">
             <div class="row p-3 mx-auto">
                 <?php
+                $count = 0;
                 foreach ($result as $row) {
+                    if ($count % 4 == 0) {
+                        if ($count == 0) {
+                            echo '<div class="carousel-item active"><div class="row">';
+                        } else {
+                            echo '</div></div><div class="carousel-item"><div class="row">';
+                        }
+                    }
                     $product_id = $row['product_id'];
                     $product_name = $row['product_name'];
                     $product_description = $row['product_description'];
@@ -110,17 +118,19 @@ if (isset($_POST["cart"])) {
                         </a>
                     </div>
 
-                <?php } ?>
-                <button class="carousel-control-prev btn-dark" type="button" data-bs-target="#carouselNew" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselNew" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+                <?php
+                    $count++;
+                } ?>
             </div>
         </div>
+        <button class="carousel-control-prev btn-dark" type="button" data-bs-target="#carouselNew" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Előző</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselNew" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Következő</span>
+        </button>
     </div>
 
 </div>
