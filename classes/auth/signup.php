@@ -19,7 +19,7 @@ class Signup extends Db
 
     public function setUser($uid, $pwd, $pwdRepeat, $email)
     {
-        $stmt = $this->connect()->prepare("INSERT INTO users (username, pwd, email) VALUES (?, ?, ?);");
+        $stmt = $this->connect()->prepare("INSERT INTO users (username, pwd, email, user_category) VALUES (?, ?, ?, 2);");
 
         $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 

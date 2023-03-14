@@ -15,6 +15,28 @@ $product_created_at = $result["product_created_at"];
 $product_modified_at = $result["product_modified_at"];
 $product_deleted_at = $result["product_deleted_at"];
 
+if (isset($_POST["cart"])) {
+    if (isset($_SESSION["userid"]) && isset($_SESSION["username"])) {
+        if (isset($_POST["product_id"])) {
+            $exist=false;            
+            for($i=0; $i<count($_SESSION["product_in_cart"]); $i++) {                                   
+                if($_SESSION["product_in_cart"][$i]["product_id"] == $_POST["product_id"]) {                    
+                    $_SESSION["product_in_cart"][$i]["quantity"] = $_SESSION["product_in_cart"][$i]["quantity"] + $_POST["quantity_input"]; 
+                    $exist=true;
+                    break;                                      
+                }                
+            } 
+            if(!$exist) array_push($_SESSION["product_in_cart"], array("product_id"=>$_POST["product_id"], "quantity"=>"1"));           
+            echo "<script>window.location.href = \"/farmshop/cart.php\"</script>";
+        }
+    } else {
+        echo "<script>        
+                if(confirm(\"Kosárba helyezéshez be kell jelentkezni!\"))
+                    window.location.href = \"/farmshop/login.php\"        
+            </script>";
+    }
+}
+
 ?>
 
 <div class="row">
@@ -25,13 +47,16 @@ $product_deleted_at = $result["product_deleted_at"];
         <h1 class="mb-4"><?php echo $product_name; ?></h1>
         <p class="text-muted mb-4"><?php echo $product_description; ?></p>
         <h2 class="mb-3"><?php echo $product_price; ?> Ft</h2>
-        <form>
-            <div class="form-group">
-                <button type="button" class="btn bg-light border rounded-circle"><i class="fas fa-minus"></i></button>
-                <input type="text" value="1" class="form-control w-25 d-inline">
-                <button type="button" class="btn bg-light border rounded-circle"><i class="fas fa-plus"></i></button>
-            </div>
-            <button type="submit" class="btn btn-primary mb-4">Kosárba</button>
+        <form method="post"> 
+            <div class="input-group mb-3">
+                <button class="btn btn-outline-secondary minus-btn" type="button">-</button>
+                <input type="number" name="quantity_input" class="form-control text-center quantity-input" value="1" min="1" max="<?php echo $result["product_quantity"]; ?>">
+                <button class="btn btn-outline-secondary plus-btn" type="button">+</button>
+            </div>           
+
+            <input type="hidden" name="product_id" value=<?php echo $product_id; ?>>
+            <button class="btn btn-success" name="cart">Kosárba <i class="fa-solid fa-cart-shopping"></i></button>
+
         </form>
         <h3 class="mb-3">Termék adatai:</h3>
         <ul class="list-unstyled">
@@ -41,3 +66,53 @@ $product_deleted_at = $result["product_deleted_at"];
         </ul>
     </div>
 </div>
+
+
+<script>   
+   // Add event listener to the quantity input field
+   var quantityInputs = document.querySelectorAll(".quantity-input");
+
+   quantityInputs.forEach(function(input) {
+     input.addEventListener("change", function() {
+       var value = parseInt(input.value);
+       var min = parseInt(input.min);
+       var max = parseInt(input.max);
+
+       if (value < min) {
+         input.value = min;
+       } else if (value > max) {
+         input.value = max;
+       }
+     });
+   });
+
+   // Add event listeners to the plus and minus buttons
+   var minusButtons = document.querySelectorAll(".minus-btn");
+   var plusButtons = document.querySelectorAll(".plus-btn");
+
+   minusButtons.forEach(function(button) {
+     button.addEventListener("click", function() {
+       var input = button.parentElement.querySelector(".quantity-input");
+       var value = parseInt(input.value);
+       var min = parseInt(input.min);
+
+       if (value > min) {
+         value--;
+         input.value = value;         
+       }
+     });
+   });
+
+   plusButtons.forEach(function(button) {
+     button.addEventListener("click", function() {
+       var input = button.parentElement.querySelector(".quantity-input");
+       var value = parseInt(input.value);
+       var max = parseInt(input.max);
+
+       if (value < max) {
+         value++;
+         input.value = value;         
+       }
+     });
+   });
+ </script>

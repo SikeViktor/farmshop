@@ -4,9 +4,7 @@
   if (isset($_POST["removed_product_id"])) {    
     array_splice($_SESSION["product_in_cart"], $_POST["removed_product_id"], 1);  
     header("Refresh:0");      
-  }
-
-  
+  }  
 
 
   ?>
@@ -19,8 +17,12 @@
          Kosár tartalma
        </div>
        <div class="card-body">
-         <?php for ($i = 0; $i < count($_SESSION["product_in_cart"]); $i++) {
-            $result = $product->getProductById($_SESSION["product_in_cart"][$i]);
+         <?php 
+         if(count($_SESSION["product_in_cart"]) == 0)
+          echo "<div class=\"mb-3 text-center\">Kosár tartalma üres!</div>";         
+         
+         for ($i = 0; $i < count($_SESSION["product_in_cart"]); $i++) {
+            $result = $product->getProductById($_SESSION["product_in_cart"][$i]["product_id"]);            
           ?>
            <div class="row mb-3">
              <div class="col-md-3">
@@ -31,7 +33,7 @@
                <p class="mb-2"><?php echo $result["category_name"]; ?></p>
                <div class="input-group mb-3">
                  <button class="btn btn-outline-secondary minus-btn" type="button">-</button>
-                 <input type="number" class="form-control text-center quantity-input" value="1" min="1" max="<?php echo $result["product_quantity"]; ?>">
+                 <input type="number" class="form-control text-center quantity-input" value="<?php echo $_SESSION["product_in_cart"][$i]["quantity"];?>" min="1" max="<?php echo $result["product_quantity"]; ?>">
                  <button class="btn btn-outline-secondary plus-btn" type="button">+</button>
                </div>
                <p class="mb-2">Egységár: <?php echo $result["product_price"]; ?> Ft</p>
@@ -48,30 +50,27 @@
      </div>
      <div class="card mb-4">
        <div class="card-header">
-         Order Note
+         Megjegyzés
        </div>
-       <div class="card-body">
-         <form>
-           <div class="mb-3">
-             <label for="note" class="form-label">Note</label>
+       <div class="card-body">         
+           <div class="mb-3">             
              <textarea class="form-control" id="note" rows="3"></textarea>
-           </div>
-           <button type="submit" class="btn btn-primary">Save Note</button>
-         </form>
+           </div>                    
        </div>
      </div>
    </div>
    <div class="col-lg-4">
      <div class="card mb-4">
        <div class="card-header">
-         Order Summary
+         Összegzés
        </div>
        <div class="card-body">
          <p class="mb-2 total"></p>
          <p class="mb-2">Szállítás: ? Ft</p>
          <hr>
          <p class="mb-0 total2">Végösszeg: </p>
-         <button type="button" class="btn btn-primary mt-3 btn-block">Proceed to Checkout</button>
+         <button type="button" class="btn btn-primary mt-3 btn-block" 
+         <?php if(count($_SESSION["product_in_cart"]) == 0) echo "disabled"; else echo ""; ?>>Fizetés</button>
        </div>
      </div>
    </div>

@@ -7,27 +7,22 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="col offset-lg-1 navbar-nav mb-2 mb-lg-0 justify-content-center">
         <li class="nav-item px-lg-4">
-          <a class="nav-link text-white" href="<?php echo $_SERVER['PHP_SELF']; ?>"><i class="fa-solid fa-house"></i> Főoldal</a>
+          <a class="nav-link text-white" href="/farmshop/"><i class="fa-solid fa-house"></i> Főoldal</a>
         </li>
-        <!-- <li class="nav-item dropdown px-4">
-          <a class="nav-link dropdown-toggle  text-white" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Tyúkok
+        <li class="nav-item dropdown px-lg-4">
+          <a class="nav-link dropdown-toggle text-white" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-box"></i> Termékek
           </a>
-          <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item " href="">Állomány</a></li>
-            <li><a class="dropdown-item" href">Keltetés</a></li>
-            <li>
+          <ul class="dropdown-menu dropdown-menu">
+            <li><a class="dropdown-item " href="/farmshop/products.php">Összes termék</a></li>
+            <!-- <li>
               <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="">Tojás</a></li>
+            </li>                        -->
           </ul>
-        </li> -->
-        <li class="nav-item px-lg-4">
-          <a class="nav-link  text-white" href="<?php echo $_SERVER['PHP_SELF']; ?>"><i class="fa-solid fa-box"></i> Termékek</a>
         </li>
       </ul>
       <ul class="navbar-nav mb-lg-2 col-lg-2 justify-content-center">
-        <?php if (!isset($_SESSION["userid"]) && !isset($_SESSION["username"])) {                     
+        <?php if (!isset($_SESSION["userid"]) && !isset($_SESSION["username"])) {
           echo '<li class="ml-5"><a href="/farmshop/login.php" class="btn btn-dark" role="button"><i class="fa-solid fa-right-to-bracket"></i> Bejelentkezés</a></li>';
         } else {
           echo '
@@ -40,13 +35,13 @@
               <a class="nav-link text-white" href="/farmshop/cart.php">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="position-absolute top-n1 start-100 translate-middle badge bg-danger rounded-circle p-2"';
-                if(count($_SESSION["product_in_cart"]) == 0){
-                  echo ' hidden';
-                }
-                echo '>'.count($_SESSION["product_in_cart"]).'<span class="visually-hidden">cart items</span></span>
+          if (count($_SESSION["product_in_cart"]) == 0) {
+            echo ' hidden';
+          }
+          echo '>' . count($_SESSION["product_in_cart"]) . '<span class="visually-hidden">cart items</span></span>
               </a>
             </li>          
-            <li class="nav-item dropdown">            
+            <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle text-white me-lg-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 ' . $_SESSION["username"] . '
               </a>

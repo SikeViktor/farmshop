@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $signup=new Signup($username, $password, $password_confirm, $email);
 
     $errors=$signup->setUser($username, $password, $password_confirm, $email);
+    if(empty($errors)) header("Location: /farmshop/login.php");
 }
 
 function post_data($field)
