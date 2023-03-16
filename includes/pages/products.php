@@ -1,11 +1,21 @@
 <?php
 $products = new Products();
 
+$elements = 12;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$countProducts = $products->countProducts();
-$result = $products->listProducts($page, 12);
 
-$total_pages = ceil($countProducts / 12);
+if (!empty($_GET["searchname"])) {
+    $countProducts = count($products->getProducts($_GET["searchname"], $page, $elements));
+    $total_pages = ceil($countProducts / $elements);
+    $result = $products->getProducts($_GET["searchname"], $page, $elements);
+} else {
+    $countProducts = count($products->getProducts("", $page, $elements));
+    $total_pages = ceil($countProducts / $elements);
+    $result = $products->getProducts("", $page, $elements);
+}
+
+$categories = $products->getCategories();
+
 
 //$_SESSION["product_in_cart"]=[];
 
@@ -30,14 +40,43 @@ if (isset($_POST["cart"])) {
             </script>";
     }
 }
-
-
-
 ?>
 
 <div class="col-12">
     <h2>Termékek</h2>
+    <div class="col-md-6 offset-md-3 mb-3">
+        <form method="get" action="/farmshop/products.php">
+            <div class="input-group">
+                <input type="text" name="searchname" class="form-control" placeholder="Keresés...">
+
+                <select class="form-select" name="searchcategory" aria-label="Default select example">
+                    <option value="all">Összes termék</option>
+                    <?php
+                    foreach ($categories as $cat) {
+                        echo "<option value=\"" . $cat['category_id'] . "\">" . ucfirst($cat['category_name']) . "</option>";
+                    }
+                    ?>
+                </select>
+
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 offset-md-10 pe-4">
+        <form id="sortingForm" method="get" action="/farmshop/products.php">
+            <div class="input-group">
+                <select class="form-select" name="sortby" aria-label="Default select example" id="sortingSelect">
+                    <option>Rendezés</option>
+                    <option value="name">Név</option>
+                    <option value="price_asc">Ár növekvő</option>
+                    <option value="price_desc">Ár csökkenő</option>
+                    <option value="rating">Értékelés</option>
+                </select>
+            </div>
+        </form>
+    </div>
     <div class="row p-3 mx-auto">
+
         <?php
         foreach ($result as $row) {
             $product_id = $row['product_id'];
@@ -86,15 +125,24 @@ if (isset($_POST["cart"])) {
                 </a>
             </div>
 
-        <?php } // Display the pagination links
+        <?php }
         echo "<ul class=\"pagination\">";
         for ($i = 1; $i <= $total_pages; $i++) {
             $active = ($i == $page) ? "active" : "";
             echo "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
         }
-        echo "</ul>"; 
+        echo "</ul>";
         ?>
 
     </div>
 
 </div>
+
+
+<script>
+  const mySelect = document.querySelector('#sortingSelect');
+  const myForm = document.querySelector('#sortingForm');
+  sortingSelect.addEventListener('change', function() {
+    sortingForm.submit();
+  });
+</script>

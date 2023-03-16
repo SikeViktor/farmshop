@@ -26,7 +26,7 @@ if (isset($_POST["cart"])) {
                     break;                                      
                 }                
             } 
-            if(!$exist) array_push($_SESSION["product_in_cart"], array("product_id"=>$_POST["product_id"], "quantity"=>"1"));           
+            if(!$exist) array_push($_SESSION["product_in_cart"], array("product_id"=>$_POST["product_id"], "quantity"=>$_POST["quantity_input"]));           
             echo "<script>window.location.href = \"/farmshop/cart.php\"</script>";
         }
     } else {

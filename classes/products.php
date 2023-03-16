@@ -3,34 +3,30 @@
 class Products extends Db
 {
 
-    public function getProducts()
+    //összes termék listázása, keresés
+    public function getProducts($name, $page, $element)
     {
         try {
-            $stmt = "SELECT * FROM products 
+            $nameWithWildcard = $name . '%';
+            $offset = ($page - 1) * $element;
+            $stmt = $this->connect()->prepare("SELECT * FROM products 
                 INNER JOIN product_categories 
-                ON product_category_id = category_id";
-            $results = $this->connect()->query($stmt);
-            return $results;
+                ON product_category_id = category_id
+                WHERE product_name LIKE ?
+                LIMIT ? OFFSET ?");
+            $stmt->bindParam(1, $nameWithWildcard);
+            $stmt->bindParam(2, $element, PDO::PARAM_INT);
+            $stmt->bindParam(3, $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $products;
         } catch (PDOException $e) {
             echo $e->getMessage();
             return false;
         }
     }
 
-    public function countProducts()    
-    {
-        try {
-            $stmt = "SELECT COUNT(*) as count FROM products 
-                INNER JOIN product_categories 
-                ON product_category_id = category_id";
-            $results = $this->connect()->query($stmt)->fetch()['count'];
-            return $results;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            return false;
-        }
-    }
-
+    //termékek dátum szerinti rendezése
     public function getProductsByDate()
     {
         try {
@@ -39,7 +35,7 @@ class Products extends Db
                 ON product_category_id = category_id
                 ORDER BY product_created_at DESC";
 
-            $results = $this->connect()->query($stmt);
+            $results = $this->connect()->query($stmt)->fetchAll(PDO::FETCH_ASSOC);
             return $results;
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -47,11 +43,12 @@ class Products extends Db
         }
     }
 
+    //termékek kategóriáinak lekérése
     public function getCategories()
     {
         try {
             $stmt = "SELECT * FROM `product_categories`";
-            $results = $this->connect()->query($stmt);
+            $results = $this->connect()->query($stmt)->fetchAll(PDO::FETCH_ASSOC);
             return $results;
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -59,6 +56,7 @@ class Products extends Db
         }
     }
 
+    //termék kategória id szerint
     public function getCategoryById($id)
     {
         try {
@@ -74,6 +72,7 @@ class Products extends Db
         }
     }
 
+    //termékek kategória szerinti lekérdezése
     public function getProductsByCategory($category)
     {
         try {
@@ -84,7 +83,7 @@ class Products extends Db
                 WHERE product_category_id=?");
             $stmt->bindParam(1, $category);
             $stmt->execute();
-            $products = $stmt->fetch(PDO::FETCH_ASSOC);
+            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $products;
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -92,6 +91,7 @@ class Products extends Db
         }
     }
 
+    //termék lekérdezése id szerint
     public function getProductById($id)
     {
         try {
@@ -104,21 +104,6 @@ class Products extends Db
             $stmt->execute();
             $product = $stmt->fetch(PDO::FETCH_ASSOC);
             return $product;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            return false;
-        }
-    }
-
-    public function listProducts($page, $element)
-    {
-        try {
-            $offset = ($page - 1) * $element;
-            $query = "SELECT * FROM products 
-            INNER JOIN product_categories 
-            ON product_category_id = category_id LIMIT $offset, $element";
-            $results = $this->connect()->query($query)->fetchAll(PDO::FETCH_ASSOC);
-            return $results;
         } catch (PDOException $e) {
             echo $e->getMessage();
             return false;
@@ -155,39 +140,6 @@ class Products extends Db
             $rating["int"] = intval($number["rating"]);
             $rating["float"] = $number["rating"] - $rating["int"];
             return $rating;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            return false;
-        }
-    }
-
-
-
-
-    public function updateBrooding($start_date, $done_date, $chick_number, $alive, $age, $id)
-    {
-        try {
-            $stmt = $this->connect()->prepare("UPDATE brooding SET start_date = ?, done_date=?, chick_number=?, alive=?, age=? WHERE id=?");
-
-            if (!$stmt->execute(array($start_date, $done_date, $chick_number, $alive, $age, $id))) {
-                $stmt = null;
-                header("location: ../index.php?error=stmtfailed");
-                exit();
-            }
-            return true;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            return false;
-        }
-    }
-
-    public function deleteBrooding($id)
-    {
-        try {
-            $stmt = $this->connect()->prepare("DELETE FROM brooding WHERE id=?");
-            $stmt->bindParam(1, $id);
-            $stmt->execute();
-            return true;
         } catch (PDOException $e) {
             echo $e->getMessage();
             return false;
