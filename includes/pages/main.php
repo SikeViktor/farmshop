@@ -1,7 +1,8 @@
 <?php
 $products = new Products();
 
-$result = $products->getProductsByDate();
+$result = $products->getProducts(null, null, "product_created_at", "DESC", null, null);
+
 //$_SESSION["product_in_cart"]=[];
 
 if (isset($_POST["cart"])) {

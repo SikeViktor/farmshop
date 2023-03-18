@@ -3,18 +3,43 @@ $products = new Products();
 
 $elements = 12;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$searchName = isset($_GET["searchname"]) ? $_GET["searchname"] : "";
+$searchCategory = isset($_GET["searchcategory"]) ? $_GET["searchcategory"] : "";
+$sortBy = isset($_GET["sortby"]) ? $_GET["sortby"] : "";
 
-if (!empty($_GET["searchname"])) {
-    $countProducts = count($products->getProducts($_GET["searchname"], $page, $elements));
-    $total_pages = ceil($countProducts / $elements);
-    $result = $products->getProducts($_GET["searchname"], $page, $elements);
-} else {
-    $countProducts = count($products->getProducts("", $page, $elements));
-    $total_pages = ceil($countProducts / $elements);
-    $result = $products->getProducts("", $page, $elements);
-}
+//var_dump($products->getProducts("", $page, $elements, "product_id", "DESC"));
+//var_dump($products->getProductsByCategory($searchCategory,"", $page, $elements, "product_id", "DESC"));
+
+/*$countProducts = count($products->getProducts($searchName, $page, $elements));
+$total_pages = ceil($countProducts / $elements);*/
+//$result = $products->getProducts($searchName, $page, $elements);
 
 $categories = $products->getCategories();
+
+switch ($sortBy) {
+    case 'name':
+        $result = $products->getProducts($searchName, $searchCategory, "product_name", "ASC", null, null);
+        break;
+    case 'price_asc':
+        echo "ok";
+        $result = $products->getProducts($searchName, $searchCategory, "product_price", "ASC", null, null);
+        break;
+    case 'price_desc':
+        $result = $products->getProducts($searchName, $searchCategory, "product_price", "DESC", null, null);
+        break;
+    case 'newest':
+        $result = $products->getProducts($searchName, $searchCategory, "product_created_at", "DESC", null, null);
+        break;
+    case 'oldest':
+        $result = $products->getProducts($searchName, $searchCategory, "product_created_at", "ASC", null, null);
+        break;
+
+    default:
+        $result = $products->getProducts($searchName, $searchCategory, null, null, null, null);
+        break;
+}
+$countProducts = count($result);
+$total_pages = ceil($countProducts / $elements);
 
 
 //$_SESSION["product_in_cart"]=[];
@@ -44,37 +69,34 @@ if (isset($_POST["cart"])) {
 
 <div class="col-12">
     <h2>Termékek</h2>
-    <div class="col-md-6 offset-md-3 mb-3">
-        <form method="get" action="/farmshop/products.php">
+    <div class="col-md-6 offset-md-3">
+        <form id="searchForm" method="get" action="/farmshop/products.php">
             <div class="input-group">
-                <input type="text" name="searchname" class="form-control" placeholder="Keresés...">
+                <input type="text" name="searchname" value="<?php if (isset($_GET["searchname"])) echo $_GET["searchname"]; ?>" class="form-control" placeholder="Keresés...">
 
                 <select class="form-select" name="searchcategory" aria-label="Default select example">
-                    <option value="all">Összes termék</option>
+                    <option value="">Összes termék</option>
                     <?php
-                    foreach ($categories as $cat) {
-                        echo "<option value=\"" . $cat['category_id'] . "\">" . ucfirst($cat['category_name']) . "</option>";
-                    }
-                    ?>
+                    foreach ($categories as $cat) { ?>
+                        <option value="<?php echo $cat['category_id']; ?>" <?php echo (isset($_GET["searchcategory"]) && $_GET["searchcategory"] == $cat['category_id']) ? "selected" : ""; ?>> <?php echo ucfirst($cat['category_name']); ?></option>;
+                    <?php } ?>
                 </select>
 
                 <button type="submit" class="btn btn-primary"><i class="fa-solid fa-search"></i></button>
             </div>
-        </form>
-    </div>
-    <div class="col-md-2 offset-md-10 pe-4">
-        <form id="sortingForm" method="get" action="/farmshop/products.php">
-            <div class="input-group">
+            <div class="input-group w-50 mt-4">
                 <select class="form-select" name="sortby" aria-label="Default select example" id="sortingSelect">
-                    <option>Rendezés</option>
-                    <option value="name">Név</option>
-                    <option value="price_asc">Ár növekvő</option>
-                    <option value="price_desc">Ár csökkenő</option>
-                    <option value="rating">Értékelés</option>
+                    <option <?php echo (!isset($_GET["sortby"]) || $_GET["sortby"] == "") ? "selected" : ""; ?> disabled>Rendezés</option>
+                    <option value="name" <?php echo (isset($_GET["sortby"]) && $_GET["sortby"] == "name") ? "selected" : ""; ?>>Név szerinti</option>
+                    <option value="price_asc" <?php echo (isset($_GET["sortby"]) && $_GET["sortby"] == "price_asc") ? "selected" : ""; ?>>Legolcsóbb elől</option>
+                    <option value="price_desc" <?php echo (isset($_GET["sortby"]) && $_GET["sortby"] == "price_desc") ? "selected" : ""; ?>>Legdrágább elől</option>
+                    <option value="newest" <?php echo (isset($_GET["sortby"]) && $_GET["sortby"] == "newest") ? "selected" : ""; ?>>Legújabb elől</option>
+                    <option value="oldest" <?php echo (isset($_GET["sortby"]) && $_GET["sortby"] == "oldest") ? "selected" : ""; ?>>Legrégebbi elől</option>
                 </select>
             </div>
         </form>
     </div>
+
     <div class="row p-3 mx-auto">
 
         <?php
@@ -126,12 +148,12 @@ if (isset($_POST["cart"])) {
             </div>
 
         <?php }
-        echo "<ul class=\"pagination\">";
+        /*echo "<ul class=\"pagination\">";
         for ($i = 1; $i <= $total_pages; $i++) {
             $active = ($i == $page) ? "active" : "";
             echo "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
         }
-        echo "</ul>";
+        echo "</ul>";*/
         ?>
 
     </div>
@@ -140,9 +162,9 @@ if (isset($_POST["cart"])) {
 
 
 <script>
-  const mySelect = document.querySelector('#sortingSelect');
-  const myForm = document.querySelector('#sortingForm');
-  sortingSelect.addEventListener('change', function() {
-    sortingForm.submit();
-  });
+    const mySelect = document.querySelector('#sortingSelect');
+    const myForm = document.querySelector('#searchForm');
+    sortingSelect.addEventListener('change', function() {
+        searchForm.submit();
+    });
 </script>

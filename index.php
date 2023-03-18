@@ -10,8 +10,9 @@ require "classes/database/db.php";
 require_once "classes/auth/login.php";
 require "classes/auth/signup.php";
 
-
+require "classes/users.php";
 require "classes/products.php";
+require "classes/orders.php";
 
 //header
 require "includes/header.php";
@@ -26,10 +27,13 @@ switch ($_SERVER["REQUEST_URI"]) {
         break;
     case '/farmshop/register.php':
         require "includes/pages/registration.php";
-        break;    
+        break;
+    case '/farmshop/userdata.php':
+        require "includes/pages/userdata.php";
+        break;
     case preg_match('/^\/farmshop\/products\.php(\?\w\W)*/', $_SERVER["REQUEST_URI"]) ? true : false:
         require "includes/pages/products.php";
-        break;        
+        break;
     case '/farmshop/cart.php':
         require "includes/pages/cart.php";
         break;
@@ -50,7 +54,7 @@ require "includes/footer.php";
     //var_dump($_SERVER["REQUEST_URI"]);    
     //var_dump($_SERVER['HTTP_REFERER']);  
     //var_dump($_POST); 
-    
+
 
     ?>
 </pre>

@@ -46,6 +46,8 @@
                 ' . $_SESSION["username"] . '
               </a>
               <ul class="dropdown-menu dropdown-menu-lg-end">
+                <li><a href="/farmshop/userdata.php" class="dropdown-item" role="button"><i class="fa-solid fa-user"></i> Adataim</a></li>
+                <li><a href="/farmshop/orders.php" class="dropdown-item" role="button"><i class="fa-solid fa-bag-shopping"></i> Rendeléseim</a></li>
                 <li><form method="post"><button type="submit" class="dropdown-item" name="logoutbtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Kijelentkezés</button></form></li>              
               </ul>
             </li>
