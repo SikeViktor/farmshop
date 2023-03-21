@@ -37,8 +37,11 @@ switch ($_SERVER["REQUEST_URI"]) {
     case '/farmshop/cart.php':
         require "includes/pages/cart.php";
         break;
-    case preg_match('/^\/farmshop\/product\.php\?id=(\d+)/', $_SERVER["REQUEST_URI"]) ? true : false:
+    case preg_match('/^\/farmshop\/product\.php(\?\w\W)*/', $_SERVER["REQUEST_URI"]) ? true : false:
         require "includes/pages/product.php";
+        break;
+    case '/farmshop/orders.php':
+        require "includes/pages/myorders.php";
         break;
     default:
         http_response_code(404);
@@ -54,6 +57,16 @@ require "includes/footer.php";
     //var_dump($_SERVER["REQUEST_URI"]);    
     //var_dump($_SERVER['HTTP_REFERER']);  
     //var_dump($_POST); 
+
+    /*$(document).ready(function() {
+        $(".quantity-input").on("change", function() {
+            var productIndex = $(this).data("product-index");
+            var newQuantity = $(this).val();
+            var productInCart = <?php echo json_encode($_SESSION["product_in_cart"]); ?>;
+            productInCart[productIndex].quantity = newQuantity;
+            <?php $_SESSION["product_in_cart"] = $productInCart; ?>
+        });
+    });*/
 
 
     ?>

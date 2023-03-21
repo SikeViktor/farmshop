@@ -50,9 +50,7 @@ class Login extends Db
         }        
 
         $stmt = null;
-
-
-    }
+    } 
 
     private function emptyInput($field)
     {
