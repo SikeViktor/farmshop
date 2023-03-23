@@ -22,36 +22,45 @@
         </li>
       </ul>
       <ul class="navbar-nav mb-lg-2 col-lg-2 justify-content-center">
-        <?php if (!isset($_SESSION["userid"]) && !isset($_SESSION["username"])) {
+        <?php
+        $navBar = "";
+
+        if (!isset($_SESSION["userid"]) && !isset($_SESSION["username"])) {
           echo '<li class="ml-5"><a href="/farmshop/login.php" class="btn btn-dark" role="button"><i class="fa-solid fa-right-to-bracket"></i> Bejelentkezés</a></li>';
         } else {
-          echo '
+          $navBar = '
             <li class="nav-item mx-lg-2">
               <a class="nav-link text-white" href="/farmshop/favourite.php">
                 <i class="fa-solid fa-heart"></i>
               </a>
-            </li>
-            <li class="nav-item mx-lg-2 me-lg-4 position-relative">
+            </li>';
+          $navBar .= '<li class="nav-item mx-lg-2 me-lg-4 position-relative">
               <a class="nav-link text-white" href="/farmshop/cart.php">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="position-absolute top-n1 start-100 translate-middle badge bg-danger rounded-circle p-2"';
           if (count($_SESSION["product_in_cart"]) == 0) {
-            echo ' hidden';
+            $navBar .= ' hidden';
           }
-          echo '>' . count($_SESSION["product_in_cart"]) . '<span class="visually-hidden">cart items</span></span>
+          $navBar .= '>' . count($_SESSION["product_in_cart"]) . '<span class="visually-hidden">cart items</span></span>
               </a>
-            </li>          
-            <li class="nav-item dropdown">
+            </li>';
+          $navBar .= '<li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle text-white me-lg-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 ' . $_SESSION["username"] . '
               </a>
-              <ul class="dropdown-menu dropdown-menu-lg-end">
-                <li><a href="/farmshop/userdata.php" class="dropdown-item" role="button"><i class="fa-solid fa-user"></i> Adataim</a></li>
+              <ul class="dropdown-menu dropdown-menu-lg-end">';
+          $users = new Users();
+          $user = $users->getUserById($_SESSION["userid"]);
+          if ($user["user_category_name"] == "admin") {
+            $navBar .=  '<li><a href="/farmshop/admin.php" class="dropdown-item" role="button"><i class="fa-solid fa-user"></i> Admin felület</a></li>';
+          }
+          $navBar .= '<li><a href="/farmshop/userdata.php" class="dropdown-item" role="button"><i class="fa-solid fa-user"></i> Adataim</a></li>
                 <li><a href="/farmshop/orders.php" class="dropdown-item" role="button"><i class="fa-solid fa-bag-shopping"></i> Rendeléseim</a></li>
                 <li><form method="post"><button type="submit" class="dropdown-item" name="logoutbtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Kijelentkezés</button></form></li>              
               </ul>
             </li>
           ';
+          echo $navBar;
           if (array_key_exists('logoutbtn', $_POST)) {
             session_destroy();
             header("Refresh:0");

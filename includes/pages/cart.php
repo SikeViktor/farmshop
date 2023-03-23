@@ -2,6 +2,7 @@
 $product = new Products();
 $order = new Orders();
 
+$success = null;
 $total = 0;
 
 if (isset($_POST["removed_product_id"])) {
@@ -19,16 +20,38 @@ if (isset($_POST['buy'])) {
     $order_comment = $_POST["comment"];
     $order_items = $_SESSION["product_in_cart"];
 
+    try {
+        foreach ($_SESSION["product_in_cart"] as $cartProduct) {
+            $product->updateProductQuantity($cartProduct["product_id"], $cartProduct["quantity"]);
+        }
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+
     $result = $order->createOrder($user_id, $total2, $order_comment, $order_items);
 
     if ($result) {
-        echo "Sikeres rendelés!";
+        $success = true;
         unset($_SESSION["product_in_cart"]);
+        header("Refresh:3");
     } else {
-        echo "Rendelés sikertelen!";
+        $success = false;
     }
 }
+if (isset($success)) {
+    if ($success) echo '<div class="alert alert-success w-50 mx-auto mt-3" role="alert">
+                        <div class="row text-center my-2"><i class="fa-solid fa-square-check text-success fa-5x"></i></div>
+                        <div class="row justify-content-center">Sikeres Rendelés!</div>
+                        </div>';
+    else echo '<div class="alert alert-danger w-50 mx-auto mt-3" role="alert">
+                <div class="row text-center my-2"><i class="fa-solid fa-circle-exclamation text-danger fa-5x"></i></div>
+                <div class="row justify-content-center">Sikertelen Rendelés!</div>
+                </div>';
+}
+
 ?>
+
+<div class="row"></div>
 
 
 <div class="row py-5">
@@ -60,14 +83,16 @@ if (isset($_POST['buy'])) {
                                         <button class="btn btn-outline-secondary plus-btn" type="button">+</button>
                                     </div>
                                     <input type="hidden" name="refresh_product_id" value=<?php echo $i; ?>>
-                                    <button class="btn btn-warning" name="refresh" type="submit">Frissít</button>
+                                    <div class="row justify-content-center">
+                                        <button class="btn btn-warning text-white col-2" name="refresh" type="submit"><i class="fa-solid fa-arrows-rotate"></i></button>
+                                    </div>
                                 </form>
                                 <?php $subtotal = $_SESSION["product_in_cart"][$i]["quantity"] * $result["product_price"]; ?>
                                 <p class="mb-2">Egységár: <?php echo $result["product_price"]; ?> Ft</p>
                                 <p class="mb-2">Részösszeg: <?php echo $subtotal; ?> Ft</p>
                                 <form action="" method="post">
                                     <input type="hidden" name="removed_product_id" value=<?php echo $i; ?>>
-                                    <button class="btn btn-danger" type="submit">Törlés a kosárból</button>
+                                    <button class="btn btn-danger col" type="submit">Törlés a kosárból</button>
                                 </form>
 
                             </div>

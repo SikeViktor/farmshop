@@ -28,7 +28,7 @@ class Users extends Db
             echo $e->getMessage();
             return false;
         }
-    }
+    }    
 
     public function updateUser($user_id, $username, $email, $firstname, $lastname, $phone, $img_path)
     {
@@ -43,6 +43,19 @@ class Users extends Db
                 exit();
             }
             return true;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    public function countUsers()
+    {
+        try {
+            $stmt = $this->connect()->prepare("SELECT COUNT(*) as count FROM users");            
+            $stmt->execute();
+            $countOrders = $stmt->fetch(PDO::FETCH_ASSOC)["count"];
+            return $countOrders;
         } catch (PDOException $e) {
             echo $e->getMessage();
             return false;

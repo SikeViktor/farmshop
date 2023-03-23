@@ -1,69 +1,10 @@
 <?php
 
-use function PHPSTORM_META\type;
-
 class Products extends Db
 {
 
     //Termékek lekérdezése
-    //összes termék listázása, keresés, megfelelő számú megjelenítés
-    /*public function getProducts(...$params)
-    {
-        try {            
-            $name = $params[0] . '%';                
-            $element=$params[2];
-            $offset = ($params[1] - 1) * $element;
-            $sortByField = $params[3];
-            $sortDirection = $params[4];
-
-            //paraméter nélkül meghívva
-            if (empty($params)) {
-                $stmt = $this->connect()->prepare("SELECT * FROM products 
-                        INNER JOIN product_categories 
-                        ON product_category_id = category_id");
-            
-            } else 
-            //egy paraméterrel meghívva, név keresés
-            if (count($params) == 1) {                                
-                $stmt = $this->connect()->prepare("SELECT * FROM products 
-                        INNER JOIN product_categories 
-                        ON product_category_id = category_id
-                        WHERE product_name LIKE ?");                
-                $stmt->bindParam(1, $name);
-            }else 
-            //három paraméter : név, oldal, egy oldalon megjelenő elemek száma
-            if (count($params) == 3) {                               
-                $stmt = $this->connect()->prepare("SELECT * FROM products 
-                        INNER JOIN product_categories 
-                        ON product_category_id = category_id
-                        WHERE product_name LIKE ? 
-                        LIMIT ? OFFSET ?");
-                $stmt->bindParam(1, $name);
-                $stmt->bindParam(2, $element, PDO::PARAM_INT);
-                $stmt->bindParam(3, $offset, PDO::PARAM_INT);
-            }
-            else 
-            //öt paraméter : név, oldal, egy oldalon megjelenő elemek száma, rendezés mező szerint, rendezés iránya
-            if (count($params) == 5) {                               
-                $stmt = $this->connect()->prepare("SELECT * FROM products 
-                        INNER JOIN product_categories 
-                        ON product_category_id = category_id
-                        WHERE product_name LIKE ?
-                        ORDER BY $sortByField $sortDirection
-                        LIMIT ? OFFSET ?");
-                $stmt->bindParam(1, $name);               
-                $stmt->bindParam(2, $element, PDO::PARAM_INT);
-                $stmt->bindParam(3, $offset, PDO::PARAM_INT);                
-            }
-            
-            $stmt->execute();
-            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $products;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            return false;
-        }
-    }*/
+    //összes termék listázása, keresés, megfelelő számú megjelenítés  
 
     public function getProducts($name = null, $category = null, $sortByField = null, $sortDirection = null, $limit = null, $offset = null)
     {
@@ -94,7 +35,7 @@ class Products extends Db
 
             $stmt = $this->connect()->prepare($sql);
             $stmt->execute($params);
-            
+
 
             $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $products;
@@ -183,6 +124,55 @@ class Products extends Db
             $rating["int"] = intval($number["rating"]);
             $rating["float"] = $number["rating"] - $rating["int"];
             return $rating;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    public function countProducts()
+    {
+        try {
+            $stmt = $this->connect()->prepare("SELECT COUNT(*) as count FROM products");
+            $stmt->execute();
+            $countOrders = $stmt->fetch(PDO::FETCH_ASSOC)["count"];
+            return $countOrders;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    public function updateProduct($product_id, $product_name, $product_description, $category_id, $product_quantity, $product_price, $product_discount_percent, $product_img_path)
+    {
+        try {
+            $stmt = $this->connect()->prepare("UPDATE products
+                                                SET product_name = ?, product_description= ?, product_category_id=?, product_quantity=?, product_price=?, product_discount_percent=?, product_img_path=?, product_modified_at=CURRENT_TIMESTAMP()
+                                                WHERE product_id = ?");
+
+            if (!$stmt->execute(array($product_name, $product_description, $category_id, $product_quantity, $product_price, $product_discount_percent, $product_img_path, $product_id))) {
+                $stmt = null;
+                header("location: ../index.php?error=stmtfailed");
+                exit();
+            }
+            return true;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    public function updateProductQuantity($product_id, $product_quantity)
+    {
+        try {
+            $stmt = $this->connect()->prepare("UPDATE products SET product_quantity=((SELECT product_quantity FROM `products` WHERE product_id=?)-?) WHERE product_id = ?");
+
+            if (!$stmt->execute(array($product_id, $product_quantity, $product_id))) {
+                $stmt = null;
+                header("location: ../index.php?error=stmtfailed");
+                exit();
+            }
+            return true;
         } catch (PDOException $e) {
             echo $e->getMessage();
             return false;

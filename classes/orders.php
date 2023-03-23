@@ -60,4 +60,17 @@ class Orders extends Db
             return false;
         }
     }
+
+    public function countOrders()
+    {
+        try {
+            $stmt = $this->connect()->prepare("SELECT COUNT(*) as count FROM order_items");            
+            $stmt->execute();
+            $countOrders = $stmt->fetch(PDO::FETCH_ASSOC)["count"];
+            return $countOrders;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
 }

@@ -9,6 +9,8 @@ if (!isset($_SESSION["product_in_cart"]))
 require "classes/database/db.php";
 require_once "classes/auth/login.php";
 require "classes/auth/signup.php";
+require "classes/modals.php";
+require "classes/imageupload.php";
 
 require "classes/users.php";
 require "classes/products.php";
@@ -42,6 +44,9 @@ switch ($_SERVER["REQUEST_URI"]) {
         break;
     case '/farmshop/orders.php':
         require "includes/pages/myorders.php";
+        break;
+    case preg_match('/^\/farmshop\/admin\.php(\?\w\W)*/', $_SERVER["REQUEST_URI"]) ? true : false:
+        require "includes/pages/admin/admin.php";
         break;
     default:
         http_response_code(404);
