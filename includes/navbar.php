@@ -24,6 +24,7 @@
             <ul class="navbar-nav mb-lg-2 col-lg-2 justify-content-center">
                 <?php
                 $user=new Users();
+                $navbar="";
                 if (!isset($_SESSION["userid"]) && !isset($_SESSION["username"])) {
                     $navbar = '<li class="ml-5"><a href="' . $GLOBALS["url"] . '/login.php" class="btn btn-dark" role="button"><i class="fa-solid fa-right-to-bracket"></i> Bejelentkezés</a></li>';
                 } else {
@@ -53,7 +54,7 @@
 
                     if (array_key_exists('logoutbtn', $_POST)) {
                         session_destroy();
-                        header("Refresh:0");
+                        header("Location: ". $GLOBALS["url"] ."");
                     }
                 };
                 echo $navbar;

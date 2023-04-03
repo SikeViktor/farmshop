@@ -16,4 +16,4 @@
 
 <?php require "includes/navbar.php"; ?>
 
-<div class="container">
+<div class="container content">

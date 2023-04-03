@@ -111,7 +111,7 @@ class Products extends Db
     {
         try {
             $stmt = $this->connect()->prepare("UPDATE products
-                                                SET product_name = ?, product_description= ?, product_category_id=?, product_quantity=?, product_price=?, product_discount_percent=?, product_img_path=?, product_modified_at=CURRENT_TIMESTAMP()
+                                                SET product_name = ?, product_description= ?, product_category_id=?, product_quantity=?, product_price=?, product_discount_percent=?, product_img_path=?
                                                 WHERE product_id = ?");
 
             if (!$stmt->execute(array($product_name, $product_description, $category_id, $product_quantity, $product_price, $product_discount_percent, $product_img_path, $product_id))) {
@@ -144,6 +144,23 @@ class Products extends Db
         }
     }
 
+    //termék adatainak törlése
+    public function deleteProduct($product_id)
+    {
+        try {
+            $stmt = $this->connect()->prepare("DELETE FROM products WHERE product_id = ?");
+
+            if (!$stmt->execute(array($product_id))) {
+                $stmt = null;
+                header("location: ../index.php?error=stmtfailed");
+                exit();
+            }
+            return true;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
 
 
 

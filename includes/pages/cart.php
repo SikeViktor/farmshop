@@ -32,7 +32,7 @@ if (isset($_POST['buy'])) {
     if ($result) {
         $success = true;
         unset($_SESSION["product_in_cart"]);
-        header("Refresh:3");
+        header("Refresh:3, url=/orders.php");
     } else {
         $success = false;
     }

@@ -16,7 +16,7 @@ function imagePath($iPath)
 if (isset($_FILES["product_img_path"])) {
     try {
         $newFileName = $uploader->uploadImage($_FILES['product_img_path'], $_FILES["product_img_path"]['name']);
-        echo 'File uploaded successfully with name: ' . $newFileName;
+        //echo 'File uploaded successfully with name: ' . $newFileName;
     } catch (Exception $e) {
         echo 'Error uploading file: ' . $e->getMessage();
     }
@@ -29,17 +29,22 @@ if (isset($_POST["updateProduct"])) {
     } catch (Exception $e) {
         echo 'Error updating: ' . $e->getMessage();
     }
-    var_dump($_POST);
 }
 
 if (isset($_POST["newProduct"])) {
     try {
         $products->newProduct($_POST["product_name"], $_POST["product_description"], $_POST["category"], $_POST["product_quantity"], $_POST["product_price"], $_POST["product_discount_percent"], $_POST["product_img_path"]);
-        var_dump($_POST);
     } catch (Exception $e) {
         echo 'Error updating: ' . $e->getMessage();
     }
-    
+}
+
+if (isset($_POST["deleteProduct"])) {
+    try {
+        $products->deleteProduct($_POST["product_id"]);
+    } catch (Exception $e) {
+        echo 'Error updating: ' . $e->getMessage();
+    }
 }
 
 ?>
@@ -63,7 +68,7 @@ if (isset($_POST["newProduct"])) {
                         </div>
                     </form>
                     <form action="" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="product_img_path" value="<?php imagePath(null); ?>">                        
+                        <input type="hidden" name="product_img_path" value="<?php imagePath(null); ?>">
                         <div class="mb-3 w-50 mx-auto">
                             <label for="product_name" class="form-label">Termék neve</label>
                             <input class="form-control" type="text" name="product_name" required>
@@ -98,7 +103,7 @@ if (isset($_POST["newProduct"])) {
                                 <input class="form-control" type="number" name="product_discount_percent" min="0" required>
                                 <span class="input-group-text">%</span>
                             </div>
-                        </div>                        
+                        </div>
 
                         <button type="submit" name="newProduct" class="btn btn-primary btn-block">Hozzáad</button>
                     </form>
@@ -120,7 +125,7 @@ if (isset($_POST["newProduct"])) {
             </tr>
         </thead>
         <tbody>
-            <?php $result = $products->getProducts();            
+            <?php $result = $products->getProducts();
 
             foreach ($result as $row) {
             ?>
@@ -128,9 +133,21 @@ if (isset($_POST["newProduct"])) {
                     <th scope="row" class="col-2"><?php echo $row["product_id"]; ?></th>
                     <td><?php echo $row["product_name"]; ?></td>
                     <td><?php echo $row["product_price"]; ?> Ft</td>
-                    <td class="col-2"><a href="<?php echo $GLOBALS["url"] ?>/product.php?id=<?php echo $row["product_id"]; ?>" role="button" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a>
-                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#product-<?php echo $row["product_id"] ?>"><i class="fa-solid fa-pencil"></i></button>
-                        <button type="button" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    <td class="col-2">
+                        <div class="row">
+                            <div class="col-4">
+                                <a href="<?php echo $GLOBALS["url"] ?>/product.php?id=<?php echo $row["product_id"]; ?>" role="button" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#product-<?php echo $row["product_id"] ?>"><i class="fa-solid fa-pencil"></i></button>
+                            </div>
+                            <div class="col-4">
+                                <form action="" method="post">
+                                    <input type="hidden" name="product_id" value="<?php echo $row["product_id"]; ?>">
+                                    <button type="submit" name="deleteProduct" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr class="collapse" id="product-<?php echo $row["product_id"] ?>">
@@ -190,10 +207,6 @@ if (isset($_POST["newProduct"])) {
                                             <div class="mb-3 w-50 mx-auto">
                                                 <label for="product_created_at" class="form-label">Termék létrehozva</label>
                                                 <input class="form-control" type="date" name="product_created_at" value="<?php echo $row["product_created_at"]; ?>" disabled>
-                                            </div>
-                                            <div class="mb-3 w-50 mx-auto">
-                                                <label for="product_modified_at" class="form-label">Termék módosítva</label>
-                                                <input class="form-control" type="date" name="product_modified_at" value="<?php echo $row["product_modified_at"]; ?> " disabled>
                                             </div>
 
                                             <button type="submit" name="updateProduct" class="btn btn-primary btn-block">Mentés</button>
