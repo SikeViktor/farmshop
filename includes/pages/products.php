@@ -139,12 +139,22 @@ if (isset($_POST["cart"])) {
             </div>
 
         <?php }
-        echo "<ul class=\"pagination\">";
+        $current_url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        $pagination = "<ul class=\"pagination\">";
         for ($i = 1; $i <= $total_pages; $i++) {
-            $active = ($i == $page) ? "active" : "";
-            echo "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
+            $active = ($i == $page) ? "active" : "";            
+            $urlParts = parse_url($current_url);
+            if(!empty($urlParts['query']))
+                parse_str($urlParts['query'], $query);
+            $query['page'] = $i;
+            $newUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . '?' . http_build_query($query);
+
+            $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"$newUrl\">$i</a></li>";
         }
-        echo "</ul>";
+        $pagination .= "</ul>";     
+        
+        echo $pagination;
         ?>
 
     </div>

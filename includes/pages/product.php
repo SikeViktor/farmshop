@@ -12,7 +12,6 @@ $product_price = $result["product_price"];
 $product_discount_percent = $result["product_discount_percent"];
 $product_img_path = $result["product_img_path"];
 $product_created_at = $result["product_created_at"];
-$product_modified_at = $result["product_modified_at"];
 
 if (isset($_POST["cart"])) {
     if (isset($_SESSION["userid"]) && isset($_SESSION["username"])) {
