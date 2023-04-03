@@ -30,7 +30,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Bevétel</h5>
-                    <p class="card-text"><?php echo $orders->countOrders();?> Ft</p>
+                    <p class="card-text"><?php echo $orders->calculateIncome();?> Ft</p>
                 </div>
             </div>
         </div>
