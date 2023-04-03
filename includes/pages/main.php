@@ -1,7 +1,7 @@
 <?php
 $products = new Products();
 
-$result = $products->getProducts(null, null, "product_created_at", "DESC", null, null);
+$result = $products->getProducts(null, null, "product_created_at", "DESC");
 
 //$_SESSION["product_in_cart"]=[];
 
@@ -20,10 +20,8 @@ if (isset($_POST["cart"])) {
             header("Refresh:0");
         }
     } else {
-        echo "<script>        
-                if(confirm(\"Kosárba helyezéshez be kell jelentkezni!\"))
-                    window.location.href = \"/farmshop/login.php\"        
-            </script>";
+        //Vissza a login képernyőre
+        header("Location:login.php");
     }
 }
 ?>
@@ -64,7 +62,7 @@ if (isset($_POST["cart"])) {
             <div class="row p-3 mx-auto">
                 <?php
                 $count = 0;
-                foreach ($result as $row) {
+                foreach (array_slice($result, 0, 8) as $row) {
                     if ($count % 4 == 0) {
                         if ($count == 0) {
                             echo '<div class="carousel-item active"><div class="row">';
@@ -83,7 +81,7 @@ if (isset($_POST["cart"])) {
                 ?>
 
                     <div class="col-md-3 mb-3">
-                        <a href="/farmshop/product.php?id=<?php echo $product_id ?>" class="text-decoration-none text-dark ">
+                        <a href="<?php echo $GLOBALS["url"] ?>/product.php?id=<?php echo $product_id ?>" class="text-decoration-none text-dark ">
                             <div class="card product h-100">
                                 <img src="<?php echo $product_img_path; ?>" class="card-img-top p-3">
                                 <div class="card-body">
@@ -124,14 +122,16 @@ if (isset($_POST["cart"])) {
                 } ?>
             </div>
         </div>
-        <button class="carousel-control-prev btn-dark" type="button" data-bs-target="#carouselNew" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Előző</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselNew" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Következő</span>
-        </button>
     </div>
+</div>
+<button class="carousel-control-prev btn-dark" type="button" data-bs-target="#carouselNew" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Előző</span>
+</button>
+<button class="carousel-control-next" type="button" data-bs-target="#carouselNew" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Következő</span>
+</button>
+</div>
 
 </div>

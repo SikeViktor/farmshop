@@ -13,7 +13,6 @@ $product_discount_percent = $result["product_discount_percent"];
 $product_img_path = $result["product_img_path"];
 $product_created_at = $result["product_created_at"];
 $product_modified_at = $result["product_modified_at"];
-$product_deleted_at = $result["product_deleted_at"];
 
 if (isset($_POST["cart"])) {
     if (isset($_SESSION["userid"]) && isset($_SESSION["username"])) {
@@ -27,13 +26,10 @@ if (isset($_POST["cart"])) {
                 }                
             } 
             if(!$exist) array_push($_SESSION["product_in_cart"], array("product_id"=>$_POST["product_id"], "quantity"=>$_POST["quantity_input"]));           
-            echo "<script>window.location.href = \"/farmshop/cart.php\"</script>";
+            header("Location:cart.php");
         }
     } else {
-        echo "<script>        
-                if(confirm(\"Kosárba helyezéshez be kell jelentkezni!\"))
-                    window.location.href = \"/farmshop/login.php\"        
-            </script>";
+      header("Location:login.php");
     }
 }
 

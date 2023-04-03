@@ -1,6 +1,7 @@
 <?php
 require "validation/loginValidation.php";
 
+
 ?>
 
 <div class="row justify-content-center my-5">
@@ -10,7 +11,7 @@ require "validation/loginValidation.php";
                 FarmShop Bejelentkezés
             </div>
             <div class="card-body text-center">
-                <form action="" method="post">
+                <form action="<?php echo $GLOBALS["url"] ?>/login.php" method="post">
                     <div class="mb-3">
                         <label for="username" class="form-label">Felhasználónév</label>
                         <input class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : '' ?>" name="username" value="<?php echo $username ?>">
@@ -28,8 +29,8 @@ require "validation/loginValidation.php";
                     <button type="submit" class="btn btn-primary btn-block">Login</button>
                 </form>
                 <div class="my-3">
-                    <p>Ha nincs még fiókod, <a href="/farmshop/register.php">itt</a> regisztrálhatsz.</p>
-                    <form action="" method="post" class="text-end">
+                    <p>Ha nincs még fiókod, <a href="<?php echo $GLOBALS["url"] ?>/register.php">itt</a> regisztrálhatsz.</p>
+                    <form action="<?php echo $GLOBALS["url"] ?>/login.php" method="post" class="text-end">
                         <input type="hidden" name="username" value="demo">
                         <input type="hidden" name="password" value="demo">
                         <button type="submit" class="btn btn-warning btn-block">Demo</button>

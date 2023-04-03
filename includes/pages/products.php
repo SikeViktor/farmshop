@@ -1,46 +1,39 @@
 <?php
 $products = new Products();
 
-$elements = 12;
+$elements = 8;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $searchName = isset($_GET["searchname"]) ? $_GET["searchname"] : "";
 $searchCategory = isset($_GET["searchcategory"]) ? $_GET["searchcategory"] : "";
 $sortBy = isset($_GET["sortby"]) ? $_GET["sortby"] : "";
 
-//var_dump($products->getProducts("", $page, $elements, "product_id", "DESC"));
-//var_dump($products->getProductsByCategory($searchCategory,"", $page, $elements, "product_id", "DESC"));
-
-/*$countProducts = count($products->getProducts($searchName, $page, $elements));
-$total_pages = ceil($countProducts / $elements);*/
-//$result = $products->getProducts($searchName, $page, $elements);
-
 $categories = $products->getCategories();
 
 switch ($sortBy) {
     case 'name':
-        $result = $products->getProducts($searchName, $searchCategory, "product_name", "ASC", null, null);
+        $result = $products->getProducts($searchName, $searchCategory, "product_name", "ASC");
         break;
-    case 'price_asc':
-        echo "ok";
-        $result = $products->getProducts($searchName, $searchCategory, "product_price", "ASC", null, null);
+    case 'price_asc':        
+        $result = $products->getProducts($searchName, $searchCategory, "product_price", "ASC");
         break;
     case 'price_desc':
-        $result = $products->getProducts($searchName, $searchCategory, "product_price", "DESC", null, null);
+        $result = $products->getProducts($searchName, $searchCategory, "product_price", "DESC");
         break;
     case 'newest':
-        $result = $products->getProducts($searchName, $searchCategory, "product_created_at", "DESC", null, null);
+        $result = $products->getProducts($searchName, $searchCategory, "product_created_at", "DESC");
         break;
     case 'oldest':
-        $result = $products->getProducts($searchName, $searchCategory, "product_created_at", "ASC", null, null);
+        $result = $products->getProducts($searchName, $searchCategory, "product_created_at", "ASC");
         break;
 
     default:
-        $result = $products->getProducts($searchName, $searchCategory, null, null, null, null);
+        $result = $products->getProducts($searchName, $searchCategory, null, null);
         break;
 }
 $countProducts = count($result);
 $total_pages = ceil($countProducts / $elements);
 
+if($page > $total_pages) $page=$total_pages;
 
 //$_SESSION["product_in_cart"]=[];
 
@@ -59,10 +52,7 @@ if (isset($_POST["cart"])) {
             header("Refresh:0");
         }
     } else {
-        echo "<script>        
-                if(confirm(\"Kosárba helyezéshez be kell jelentkezni!\"))
-                    window.location.href = \"/farmshop/login.php\"        
-            </script>";
+        header("Location:login.php");
     }
 }
 ?>
@@ -70,7 +60,7 @@ if (isset($_POST["cart"])) {
 <div class="col-12">
     <h2>Termékek</h2>
     <div class="col-md-6 offset-md-3">
-        <form id="searchForm" method="get" action="/farmshop/products.php">
+        <form id="searchForm" method="get" action="<?php echo $GLOBALS["url"] ?>/products.php">
             <div class="input-group">
                 <input type="text" name="searchname" value="<?php if (isset($_GET["searchname"])) echo $_GET["searchname"]; ?>" class="form-control" placeholder="Keresés...">
 
@@ -99,8 +89,8 @@ if (isset($_POST["cart"])) {
 
     <div class="row p-3 mx-auto">
 
-        <?php
-        foreach ($result as $row) {
+        <?php        
+        foreach (array_slice($result, $elements*($page-1), $elements) as $row) {
             $product_id = $row['product_id'];
             $product_name = $row['product_name'];
             $product_description = $row['product_description'];
@@ -109,10 +99,11 @@ if (isset($_POST["cart"])) {
             $category_name = $row['category_name'];
             $product_quantity = $row['product_quantity'];
             $product_discount_percent = $row['product_discount_percent'];
+            
         ?>
 
             <div class="col-md-3 mb-3">
-                <a href="/farmshop/product.php?id=<?php echo $product_id ?>" class="text-decoration-none text-dark ">
+                <a href="<?php echo $GLOBALS["url"] ?>/product.php?id=<?php echo $product_id ?>" class="text-decoration-none text-dark ">
                     <div class="card product h-100">
                         <img src="<?php echo $product_img_path; ?>" class="card-img-top p-3">
                         <div class="card-body">
@@ -148,12 +139,12 @@ if (isset($_POST["cart"])) {
             </div>
 
         <?php }
-        /*echo "<ul class=\"pagination\">";
+        echo "<ul class=\"pagination\">";
         for ($i = 1; $i <= $total_pages; $i++) {
             $active = ($i == $page) ? "active" : "";
             echo "<li class=\"page-item $active\"><a class=\"page-link\" href=\"?page=$i\">$i</a></li>";
         }
-        echo "</ul>";*/
+        echo "</ul>";
         ?>
 
     </div>

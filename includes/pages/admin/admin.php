@@ -11,16 +11,16 @@ $users=new Users();
         <h2 class="text-center my-4">Admin Panel</h2>
         <ul class="nav flex-column mb-3">
             <li class="nav-item">
-                <a class="nav-link" href="/farmshop/admin.php">Dashboard</a>
+                <a class="nav-link" href="<?php echo $GLOBALS["url"] ?>/admin.php">Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/farmshop/admin.php?page=products">Termékek</a>
+                <a class="nav-link" href="<?php echo $GLOBALS["url"] ?>/admin.php?page=products">Termékek</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/farmshop/admin.php?page=orders">Rendelések</a>
+                <a class="nav-link" href="<?php echo $GLOBALS["url"] ?>/admin.php?page=orders">Rendelések</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/farmshop/admin.php?page=users">Felhasználók</a>
+                <a class="nav-link" href="<?php echo $GLOBALS["url"] ?>/admin.php?page=users">Felhasználók</a>
             </li>
         </ul>
     </div>

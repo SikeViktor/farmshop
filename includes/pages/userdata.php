@@ -32,7 +32,7 @@ if (empty($errors) && isset($_POST["updateDatas"])) {
                 <?php echo $username; ?> adatai
             </div>
             <div class="card-body text-center">
-                <form action="" method="post">
+                <form action="<?php echo $GLOBALS["url"] ?>/userdata.php" method="post">
                     <div class="mb-3">
                         <label for="username" class="form-label">Felhasználónév</label>
                         <input id="username" class="form-control <?php echo isset($errors['username']) ? 'is-invalid' : '' ?>" name="username" value="<?php echo $username ?>">

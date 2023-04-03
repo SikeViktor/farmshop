@@ -9,7 +9,7 @@ require "validation/signupValidation.php";
                 FarmShop Regisztráció
             </div>
             <div class="card-body">
-                <form action="" method="post" novalidate>
+                <form action="<?php echo $GLOBALS["url"] ?>/registration.php" method="post" novalidate>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">

@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = new Login($username, $password);
 
     $errors=$login->getUser($username, $password);
-    if(empty($errors)) header("Location: /farmshop/");
+    if(empty($errors)) header("Location: ". $GLOBALS['url'] . "/");
 }
 
 function post_data($field)

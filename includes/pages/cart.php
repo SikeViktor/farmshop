@@ -21,14 +21,13 @@ if (isset($_POST['buy'])) {
     $order_items = $_SESSION["product_in_cart"];
 
     try {
+        $result = $order->createOrder($user_id, $total2, $order_comment, $order_items);
         foreach ($_SESSION["product_in_cart"] as $cartProduct) {
             $product->updateProductQuantity($cartProduct["product_id"], $cartProduct["quantity"]);
         }
     } catch (Exception $e) {
         echo $e->getMessage();
     }
-
-    $result = $order->createOrder($user_id, $total2, $order_comment, $order_items);
 
     if ($result) {
         $success = true;
@@ -76,7 +75,7 @@ if (isset($success)) {
                             <div class="col-md-9">
                                 <h5 class="mb-2"><?php echo $result["product_name"]; ?></h5>
                                 <p class="mb-2"><?php echo $result["category_name"]; ?></p>
-                                <form action="" method="post">
+                                <form action="<?php echo $GLOBALS["url"] ?>/cart.php" method="post">
                                     <div class="input-group mb-3">
                                         <button class="btn btn-outline-secondary minus-btn" type="button">-</button>
                                         <input name="quantity" type="number" class="form-control text-center quantity-input" value="<?php echo $_SESSION["product_in_cart"][$i]["quantity"]; ?>" min="1" max="<?php echo $result["product_quantity"]; ?>">
@@ -90,7 +89,7 @@ if (isset($success)) {
                                 <?php $subtotal = $_SESSION["product_in_cart"][$i]["quantity"] * $result["product_price"]; ?>
                                 <p class="mb-2">Egységár: <?php echo $result["product_price"]; ?> Ft</p>
                                 <p class="mb-2">Részösszeg: <?php echo $subtotal; ?> Ft</p>
-                                <form action="" method="post">
+                                <form action="<?php echo $GLOBALS["url"] ?>/cart.php" method="post">
                                     <input type="hidden" name="removed_product_id" value=<?php echo $i; ?>>
                                     <button class="btn btn-danger col" type="submit">Törlés a kosárból</button>
                                 </form>
@@ -103,7 +102,7 @@ if (isset($success)) {
                 } ?>
             </div>
         </div>
-        <form action="" method="post" id="buyForm">
+        <form action="<?php echo $GLOBALS["url"] ?>/cart.php" method="post" id="buyForm">
             <div class="card mb-4">
                 <div class="card-header">
                     Megjegyzés
