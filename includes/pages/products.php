@@ -152,10 +152,12 @@ if (isset($_POST["cart"])) {
 
             $pagination .= "<li class=\"page-item $active\"><a class=\"page-link\" href=\"$newUrl\">$i</a></li>";
         }
-        $pagination .= "</ul>";     
-        
-        echo $pagination;
+        $pagination .= "</ul>";
         ?>
+
+        <div class="d-flex justify-content-center mt-2">
+            <?php echo $pagination;?>
+        </div>
 
     </div>
 

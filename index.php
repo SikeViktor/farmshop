@@ -58,3 +58,5 @@ switch ($_SERVER["REQUEST_URI"]) {
 //footer
 require "includes/footer.php";
 ?>
+
+

@@ -2,8 +2,7 @@
 require "validation/loginValidation.php";
 
 if(isset($_POST["login"]))
-    header("Location: ". $GLOBALS["url"] ."");
-
+    header("Location: ". $GLOBALS["url"] .""); 
 ?>
 
 <div class="row justify-content-center my-5">
