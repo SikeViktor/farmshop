@@ -118,24 +118,29 @@ if (isset($_POST["sendreview"])) {
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($ratings as $rating) { ?>
-                <tr>
-                    <td class="col-2"><?php echo $rating["username"]; ?></td>
-                    <td class="col-2 border-end">
-                        <div class="product-rating">
-                            <?php
-                            for ($i = 0; $i < $rating["rating"]; $i++) {
-                                echo "<i class=\"fa-solid fa-star\"></i>";
-                            }
-                            for ($i = 0; $i < 5 - $rating["rating"]; $i++) {
-                                echo "<i class=\"fa-regular fa-star\"></i>";
-                            }
-                            ?>
-                        </div>
-                    </td>
-                    <td class="col-8"><?php echo $rating["review"]; ?></td>
-                </tr>
-            <?php } ?>
+            <?php
+            if (empty($ratings)) {
+                echo "<tr><td colspan='3'>Még nem értékelte senki...</td></tr>";
+            } else {
+                foreach ($ratings as $rating) { ?>
+                    <tr>
+                        <td class="col-2"><?php echo $rating["username"]; ?></td>
+                        <td class="col-2 border-end">
+                            <div class="product-rating">
+                                <?php
+                                for ($i = 0; $i < $rating["rating"]; $i++) {
+                                    echo "<i class=\"fa-solid fa-star\"></i>";
+                                }
+                                for ($i = 0; $i < 5 - $rating["rating"]; $i++) {
+                                    echo "<i class=\"fa-regular fa-star\"></i>";
+                                }
+                                ?>
+                            </div>
+                        </td>
+                        <td class="col-8"><?php echo $rating["review"]; ?></td>
+                    </tr>
+            <?php }
+            } ?>
         </tbody>
     </table>
 </div>

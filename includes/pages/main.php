@@ -85,28 +85,29 @@ if (isset($_POST["cart"])) {
                             <div class="card product h-100">
                                 <img src="<?php echo $product_img_path; ?>" class="card-img-top p-3">
                                 <div class="card-body">
-                                    <h5 class="card-title"><?php echo $product_name; ?></h5>
+                                    <h5 class="card-title text-center"><?php echo $product_name; ?></h5>
                                     <h5 class="text-center">
                                         <?php
                                         $int = $products->getProductRating($product_id)["int"];
                                         $float = floatval($products->getProductRating($product_id)["float"]);
-                                        for ($i = 0; $i < $int; $i++) {
-                                            echo "<i class=\"fa-solid fa-star\"></i>";
-                                        }
 
-                                        if ($float < 0.25 && $float > 0)
-                                            echo "<i class=\"fa-regular fa-star\"></i>";
-                                        if ($float >= 0.25 && $float < 0.75)
-                                            echo "<i class=\"fa-solid fa-star-half-stroke\"></i>";
-                                        if ($float >= 0.75 && $float < 1)
-                                            echo "<i class=\"fa-solid fa-star\"></i>";
+                                        if ($int==0 && $float==0) {
+                                            echo "<span class='text-secondary fs-6'>Még nem értékelték</span>";
 
-                                        if ($float == 0) {
-                                            for ($i = 0; $i < 5 - $int; $i++) {
-                                                echo "<i class=\"fa-regular fa-star\"></i>";
-                                            }
                                         } else {
-                                            for ($i = 1; $i < 5 - $int; $i++) {
+                                            for ($i = 0; $i < $int; $i++) {
+                                                echo "<i class=\"fa-solid fa-star\"></i>";
+                                            }
+
+                                            if ($float < 0.25 && $float > 0)
+                                                echo "<i class=\"fa-regular fa-star\"></i>";
+                                            if ($float >= 0.25 && $float < 0.75)
+                                                echo "<i class=\"fa-solid fa-star-half-stroke\"></i>";
+                                            if ($float >= 0.75 && $float < 1)
+                                                echo "<i class=\"fa-solid fa-star\"></i>";
+
+                                            $start = ($float == 0) ? 0 : 1;
+                                            for ($i = $start; $i < 5 - $int; $i++) {
                                                 echo "<i class=\"fa-regular fa-star\"></i>";
                                             }
                                         }
