@@ -73,24 +73,7 @@ class Products extends Db
             echo $e->getMessage();
             return false;
         }
-    }
-
-    //termék értékelésének lekérdezése
-    public function getProductRating($product_id)
-    {
-        try {
-            $stmt = $this->connect()->prepare("SELECT AVG(rating) as rating FROM `product_rating` WHERE product_id = ?");
-            $stmt->bindParam(1, $product_id);
-            $stmt->execute();
-            $number = $stmt->fetch(PDO::FETCH_ASSOC);
-            $rating["int"] = intval($number["rating"]);
-            $rating["float"] = $number["rating"] - $rating["int"];
-            return $rating;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-            return false;
-        }
-    }
+    }   
 
     //termékek számának lekérdezése
     public function countProducts()
@@ -189,6 +172,78 @@ class Products extends Db
             $stmt->execute();
             $category = $stmt->fetch(PDO::FETCH_ASSOC);
             return $category;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    //termék értékelésének létrehozása
+    public function createProductRating($product_id, $user_id, $rating, $review, $review_date)
+    {
+        try {
+            $stmt = $this->connect()->prepare("INSERT INTO product_rating (product_id, user_id, rating, review, review_date)
+                                               VALUES (?, ?, ?, ?, ?)");
+
+            if (!$stmt->execute(array($product_id, $user_id, $rating, $review, $review_date))) {
+                $stmt = null;
+                header("location: ../index.php?error=stmtfailed");
+                exit();
+            }
+            return true;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    //termék értékelésének lekérdezése
+    public function getProductRating($product_id)
+    {
+        try {
+            $stmt = $this->connect()->prepare("SELECT AVG(rating) as rating FROM `product_rating` WHERE product_id = ?");
+            $stmt->bindParam(1, $product_id);
+            $stmt->execute();
+            $number = $stmt->fetch(PDO::FETCH_ASSOC);
+            $rating["int"] = intval($number["rating"]);
+            $rating["float"] = $number["rating"] - $rating["int"];
+            return $rating;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    //termékek értékelésének lekérdezése
+    public function getProductRatings($product_id)
+    {
+        try {
+            $stmt = $this->connect()->prepare("SELECT * FROM product_rating pr
+                                               INNER JOIN products p ON pr.product_id=p.product_id
+                                               INNER JOIN users u ON pr.user_id=u.user_id
+                                               WHERE pr.product_id=?");
+            $stmt->bindParam(1, $product_id);
+            $stmt->execute();
+            $ratings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $ratings;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
+    }  
+
+    //ellenőrzés, ha már vásároltál a termékből, akkor értékelhetsz
+    public function checkOrderItemsForRating($product_id, $user_id)
+    {
+        try {
+            $stmt = $this->connect()->prepare("SELECT COUNT(*) as count FROM order_details od
+                                                INNER JOIN order_items oi ON od.order_id=oi.order_id
+                                                WHERE user_id=? AND product_id=?");
+            $stmt->bindParam(1, $user_id);
+            $stmt->bindParam(2, $product_id);
+            $stmt->execute();            
+            $bought = $stmt->fetch(PDO::FETCH_ASSOC)["count"];
+            return $bought;
         } catch (PDOException $e) {
             echo $e->getMessage();
             return false;

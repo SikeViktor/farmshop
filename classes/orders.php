@@ -64,7 +64,7 @@ class Orders extends Db
             echo $e->getMessage();
             return false;
         }
-    }
+    }    
 
     public function countOrders()
     {

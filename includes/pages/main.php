@@ -94,15 +94,21 @@ if (isset($_POST["cart"])) {
                                             echo "<i class=\"fa-solid fa-star\"></i>";
                                         }
 
-                                        if ($float < 0.25)
+                                        if ($float < 0.25 && $float > 0)
                                             echo "<i class=\"fa-regular fa-star\"></i>";
                                         if ($float >= 0.25 && $float < 0.75)
                                             echo "<i class=\"fa-solid fa-star-half-stroke\"></i>";
-                                        if ($float >= 0.75)
+                                        if ($float >= 0.75 && $float < 1)
                                             echo "<i class=\"fa-solid fa-star\"></i>";
 
-                                        for ($i = 1; $i < 5 - $int; $i++) {
-                                            echo "<i class=\"fa-regular fa-star\"></i>";
+                                        if ($float == 0) {
+                                            for ($i = 0; $i < 5 - $int; $i++) {
+                                                echo "<i class=\"fa-regular fa-star\"></i>";
+                                            }
+                                        } else {
+                                            for ($i = 1; $i < 5 - $int; $i++) {
+                                                echo "<i class=\"fa-regular fa-star\"></i>";
+                                            }
                                         }
 
                                         ?>
