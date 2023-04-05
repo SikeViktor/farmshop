@@ -31,7 +31,7 @@
                                         <img src="<?php echo $orderItem["product_img_path"]; ?>" alt="product1" class="img-fluid">
                                     </div>
                                     <div class="col-md-9">
-                                        <h5 class="mb-2"><?php echo $orderItem["product_name"]; ?></h5>
+                                    <h5 class="mb-2"><a href='<?php echo $GLOBALS["url"] ?>/product.php?id=<?php echo $orderItem["product_id"] ?>' class="text-decoration-none text-dark"><?php echo $orderItem["product_name"]; ?></a></h5>
                                         <p class="mb-2">Darabszám: <?php echo $orderItem["quantity"]; ?></p>                                        
                                         <p class="mb-2">Egységár: <?php echo $orderItem["product_price"]; ?> Ft</p>                                        
                                     </div>

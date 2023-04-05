@@ -5,16 +5,17 @@ class Orders extends Db
     public function createOrder($user_id, $total, $order_comment, $order_items)
     {
         try {
-            $stmt = $this->connect()->prepare("INSERT INTO order_details (user_id, total, order_comment) VALUES (?, ?, ?)");
+            $connect=$this->connect();
+            $stmt = $connect->prepare("INSERT INTO order_details (user_id, total, order_comment) VALUES (?, ?, ?)");
             if (!$stmt->execute(array($user_id, $total, $order_comment))) {
                 $stmt = null;
                 header("location: ../index.php?error=stmtfailed");
                 exit();
             }
 
-            $order_id = $this->connect()->lastInsertId();
+            $order_id = $connect->lastInsertId();
 
-            $stmt = $this->connect()->prepare("INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)");
+            $stmt = $connect->prepare("INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)");
             foreach ($order_items as $item) {
                 if (!$stmt->execute(array($order_id, $item['product_id'], $item['quantity']))) {
                     $stmt = null;
@@ -69,7 +70,7 @@ class Orders extends Db
     public function countOrders()
     {
         try {
-            $stmt = $this->connect()->prepare("SELECT COUNT(*) as count FROM order_items");            
+            $stmt = $this->connect()->prepare("SELECT COUNT(*) as count FROM order_details");            
             $stmt->execute();
             $countOrders = $stmt->fetch(PDO::FETCH_ASSOC)["count"];
             return $countOrders;
