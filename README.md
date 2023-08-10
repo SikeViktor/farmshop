@@ -1,5 +1,5 @@
 <h1>Farmshop</h1>
-<p>Egyszerű webáruház, HTML, CSS(Bootstrap 5), Javascript, Php és MySql segítségével.</p>
+<p>Egyszerű webáruház, HTML, CSS(Bootstrap 5), Php és MySql segítségével.</p>
 
 <h2>Elérhető:</h2>
 <p>https://farmshopsv.000webhostapp.com/</p>
